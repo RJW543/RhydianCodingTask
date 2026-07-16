@@ -1,20 +1,21 @@
-// an abstract class, delibertley half finshed (will be finsihed by subclassses)
-//implements the two methods that are identicle on every OS
-// implements it via the os module, and leaving the two that differ as gap
-//The abstract methods make the compiler refuse any platform class that forgets processes or disks.
-
 import os from 'node:os'
 import type { SystemInfoService } from './SystemInfoService'
 import type { OsInfo, MemoryInfo, ProcessInfo, DiskInfo } from '../../shared/types'
 
-//function that returns a promise of OsInfo, which is an object containing information about the operating system, it does this asynchronously
+/**
+ * The platform-independent half of the SystemInfoService contract,
+ * implemented once via Node's os module. Processes and disks genuinely
+ * differ per platform, so they are declared abstract and the compiler
+ * forces every platform subclass to provide them.
+ */
 export abstract class BaseSystemInfoService implements SystemInfoService {
   async getOsInfo(): Promise<OsInfo> {
-    let currentUser: string | null = null // variable to hold the current user, initialised to null
+    let currentUser: string | null = null
     try {
       currentUser = os.userInfo().username
     } catch {
-      // os.userInfo() can throw on stripped-down systems; the brief says "if available", so null is the honest answer
+      // os.userInfo() can throw on stripped-down systems; the requirement is
+      // "current user, if available", so null is the honest answer
     }
     return {
       osName: os.version(),
@@ -38,7 +39,6 @@ export abstract class BaseSystemInfoService implements SystemInfoService {
     }
   }
 
-  // no implementation here: each platform subclass must provide these
   abstract getProcesses(): Promise<ProcessInfo[]>
   abstract getDiskInfo(): Promise<DiskInfo[]>
 }

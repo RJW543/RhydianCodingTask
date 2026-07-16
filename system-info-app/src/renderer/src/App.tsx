@@ -6,8 +6,7 @@ import { DiskPanel } from './components/DiskPanel'
 import { ProcessTable } from './components/ProcessTable'
 import { RefreshControls } from './components/RefreshControls'
 
-// the App component is the root component of the application. 
-// It manages the auto-refresh interval state and renders the various panels displaying system information.
+// Owns the refresh-interval state and composes the panels; no data logic lives here.
 function App(): React.JSX.Element {
   const [intervalMs, setIntervalMs] = useState<RefreshInterval>(5000)
 

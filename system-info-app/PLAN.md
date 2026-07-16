@@ -12,23 +12,24 @@ platform straightforward.
 
 ## Decisions I am making up front
 
-1. **No REST API.** The natural boundary in Electron is IPC (inter-process communication:
-   typed messages between the Node backend "main" process and the browser "renderer"
-   window). Adding an HTTP server would be REST for its own sake, so I will use IPC only.
-2. **No `systeminformation` npm package.** It would cover the functional requirements,
+1. **No `systeminformation` npm package.** It would cover the functional requirements,
    but it does the platform branching internally, which leaves nothing for my own platform
    abstraction to do, and that abstraction is the core of the task. I will use Node's
    built-in `os` module plus `child_process` to run OS commands, with my own parsers.
-3. **Windows + Linux.** I develop on Windows and can verify Linux under WSL2. On Windows I
+2. **Windows + Linux.** I develop on Windows and can verify Linux under WSL2. On Windows I
    will query system data through PowerShell (`Get-CimInstance`) rather than `wmic`, which
    is removed from newer Windows 11. I will ask PowerShell for JSON output so parsing is
    `JSON.parse` rather than splitting text columns. On Linux I will use `ps` and `df -kP`.
-4. **Polling happens in the renderer.** A React hook with `setInterval` calling across IPC
+3. **Polling happens in the renderer.** A React hook with `setInterval` calling across IPC
    is simpler to write and test than pushing data from main. "Manual only" refresh is just
    a null interval.
-5. **All byte values cross the boundary as raw numbers.** Formatting into "12.4 GB" is
+4. **All byte values cross the boundary as raw numbers.** Formatting into "12.4 GB" is
    presentation, so it happens in the renderer at display time only. The main process
    computes derived values (used bytes, percentages) once, so the UI does zero arithmetic.
+5. **Scaffold with the official electron-vite template:**
+   `npm create @quick-start/electron@latest system-info-app -- --template react-ts`.
+   I am using it because it gives me a correctly wired main/preload/renderer TypeScript
+   build out of the box, so my timebox goes on the task rather than build configuration.
 
 ## Architecture
 

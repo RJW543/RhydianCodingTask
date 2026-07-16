@@ -6,7 +6,6 @@ interface Props {
   intervalMs: number | null
 }
 
-// the DiskPanel component displays information about the system's disks, including their mount points, usage, and free space.
 export function DiskPanel({ intervalMs }: Props): React.JSX.Element {
   const { data, error, loading } = usePolledQuery(systemInfoClient.getDiskInfo, intervalMs)
 
@@ -24,8 +23,8 @@ export function DiskPanel({ intervalMs }: Props): React.JSX.Element {
             <div className="bar-fill" style={{ width: `${disk.usedPercentage}%` }} />
           </div>
           <p>
-            {formatBytes(disk.usedBytes)} used of {formatBytes(disk.totalBytes)} ({disk.usedPercentage}
-            %), {formatBytes(disk.freeBytes)} free
+            {formatBytes(disk.usedBytes)} used of {formatBytes(disk.totalBytes)} (
+            {disk.usedPercentage}%), {formatBytes(disk.freeBytes)} free
           </p>
         </div>
       ))}

@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -52,12 +52,11 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // Composition root: build the platform service once via the factory and
+  // hand it to the IPC layer before any window loads.
+  registerSystemInfoHandlers(createSystemInfoService())
 
-registerSystemInfoHandlers(createSystemInfoService())
-  
   createWindow()
-
-  void smokeTestServices() // TEMP: remove together with the block below
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -74,40 +73,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-// --- TEMP smoke test: delete this whole block (and the call above) before snapshotting ---
-async function smokeTestServices(): Promise<void> {
-  const service = createSystemInfoService()
-
-  console.log('--- OS info ---')
-  console.log(await service.getOsInfo())
-
-  console.log('--- Memory ---')
-  const mem = await service.getMemoryInfo()
-  const gb = (n: number): string => (n / 1024 ** 3).toFixed(1) + ' GB'
-  console.log(mem)
-  console.log(`readable: ${gb(mem.usedBytes)} of ${gb(mem.totalBytes)} (${mem.usedPercentage}%)`)
-
-  console.log('--- Disks ---')
-  console.log(await service.getDiskInfo())
-
-  console.log('--- Processes ---')
-  const procs = await service.getProcesses()
-  console.log(`count: ${procs.length}`)
-  console.log(
-    'top 5 by CPU:',
-    [...procs].sort((a, b) => b.cpuPercentage - a.cpuPercentage).slice(0, 5)
-  )
-
-  console.log('--- Factory: unsupported platform ---')
-  try {
-    createSystemInfoService('darwin')
-    console.log('PROBLEM: factory should have thrown for darwin')
-  } catch (err) {
-    console.log('OK, threw:', (err as Error).message)
-  }
-}
-// --- end TEMP ---

@@ -3,7 +3,11 @@ import { IpcChannels } from '../../shared/ipcChannels'
 import type { IpcResult } from '../../shared/types'
 import type { SystemInfoService } from '../services/SystemInfoService'
 
-//runs a service call and converts success or failure into an IpcResult meaning that the renderer can always expect a result object with an ok property and either data or error
+/**
+ * Runs a service call and converts the outcome into an IpcResult, so the
+ * renderer always receives a typed success-or-failure envelope rather than
+ * an exception mangled by the IPC boundary.
+ */
 async function wrap<T>(fn: () => Promise<T>): Promise<IpcResult<T>> {
   try {
     return { ok: true, data: await fn() }
@@ -12,7 +16,10 @@ async function wrap<T>(fn: () => Promise<T>): Promise<IpcResult<T>> {
   }
 }
 
-// the service arrives as a parameter (dependency injection) so tests can pass a fake
+/**
+ * Registers one handler per channel. The service arrives as a parameter
+ * (dependency injection) so tests can register a fake implementation.
+ */
 export function registerSystemInfoHandlers(service: SystemInfoService): void {
   ipcMain.handle(IpcChannels.getOsInfo, () => wrap(() => service.getOsInfo()))
   ipcMain.handle(IpcChannels.getProcesses, () => wrap(() => service.getProcesses()))

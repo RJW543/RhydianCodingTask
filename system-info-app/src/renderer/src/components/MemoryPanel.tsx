@@ -3,7 +3,7 @@ import { usePolledQuery } from '../hooks/usePolledQuery'
 import { formatBytes } from '../utils/formatBytes'
 
 interface Props {
-  intervalMs: number | null // props = inputs a component receives from its parent
+  intervalMs: number | null
 }
 
 export function MemoryPanel({ intervalMs }: Props): React.JSX.Element {
@@ -20,7 +20,8 @@ export function MemoryPanel({ intervalMs }: Props): React.JSX.Element {
         <div className="bar-fill" style={{ width: `${data.usedPercentage}%` }} />
       </div>
       <p>
-        {formatBytes(data.usedBytes)} used of {formatBytes(data.totalBytes)} ({data.usedPercentage}%)
+        {formatBytes(data.usedBytes)} used of {formatBytes(data.totalBytes)} ({data.usedPercentage}
+        %)
       </p>
     </section>
   )

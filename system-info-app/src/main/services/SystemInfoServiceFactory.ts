@@ -2,7 +2,12 @@ import type { SystemInfoService } from './SystemInfoService'
 import { WindowsSystemInfoService } from './platforms/WindowsSystemInfoService'
 import { LinuxSystemInfoService } from './platforms/LinuxSystemInfoService'
 
-//this function is a factory that creates an instance of the appropriate SystemInfoService implementation based on the current platform. It takes an optional platform parameter, which defaults to the current platform (process.platform). If the platform is 'win32', it returns a new instance of WindowsSystemInfoService. If the platform is not supported, it throws an error.
+/**
+ * Selects the platform implementation. This is the only place in the app
+ * that names concrete platform classes, so adding a platform means one new
+ * class and one new case here. The platform is a parameter (defaulting to
+ * process.platform) so tests can exercise every branch directly.
+ */
 export function createSystemInfoService(
   platform: NodeJS.Platform = process.platform
 ): SystemInfoService {
@@ -10,7 +15,7 @@ export function createSystemInfoService(
     case 'win32':
       return new WindowsSystemInfoService()
     case 'linux':
-       return new LinuxSystemInfoService()
+      return new LinuxSystemInfoService()
     default:
       throw new Error(`Unsupported platform: ${platform}`)
   }
