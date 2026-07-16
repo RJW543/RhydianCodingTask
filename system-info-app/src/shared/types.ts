@@ -41,3 +41,5 @@ export interface DiskInfo {
 }
 
 export type RefreshInterval = 1000 | 5000 | 10000 | null
+
+export type IpcResult<T> = { ok: true; data: T } | { ok: false; error: string }

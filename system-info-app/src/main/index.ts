@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { createSystemInfoService } from './services/SystemInfoServiceFactory'
+import { registerSystemInfoHandlers } from './ipc/registerSystemInfoHandlers'
 
 function createWindow(): void {
   // Create the browser window.
@@ -51,9 +52,9 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
 
+registerSystemInfoHandlers(createSystemInfoService())
+  
   createWindow()
 
   void smokeTestServices() // TEMP: remove together with the block below
