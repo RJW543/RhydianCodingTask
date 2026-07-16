@@ -1,34 +1,27 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import { useState } from 'react'
+import type { RefreshInterval } from '../../shared/types'
+import { OsInfoPanel } from './components/OsInfoPanel'
+import { MemoryPanel } from './components/MemoryPanel'
+import { DiskPanel } from './components/DiskPanel'
+import { ProcessTable } from './components/ProcessTable'
+import { RefreshControls } from './components/RefreshControls'
 
+// the App component is the root component of the application. 
+// It manages the auto-refresh interval state and renders the various panels displaying system information.
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const [intervalMs, setIntervalMs] = useState<RefreshInterval>(5000)
 
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
+    <div className="app">
+      <header>
+        <h1>System Information</h1>
+        <RefreshControls value={intervalMs} onChange={setIntervalMs} />
+      </header>
+      <OsInfoPanel />
+      <MemoryPanel intervalMs={intervalMs} />
+      <DiskPanel intervalMs={intervalMs} />
+      <ProcessTable intervalMs={intervalMs} />
+    </div>
   )
 }
 
