@@ -21,7 +21,7 @@ export function MemoryPanel({ intervalMs }: Props): React.JSX.Element {
       </div>
       <p>
         {formatBytes(data.usedBytes)} used of {formatBytes(data.totalBytes)} ({data.usedPercentage}
-        %)
+        %), {formatBytes(data.freeBytes)} free
       </p>
     </section>
   )
