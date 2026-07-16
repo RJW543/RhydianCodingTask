@@ -1,7 +1,7 @@
 //lists what methods an implementing class must provide and compiles to nothing. This one
 //defines the four operations for reading system information.
-//Platform abstraction means hiding the messy differences behind one stable front. 
-// The SystemInfoService interface is the front as 
+//Platform abstraction means hiding the messy differences behind one stable front.
+// The SystemInfoService interface is the front as
 // it promises what can be done (get processes, get disks) and says nothing about how
 
 //How it is used:

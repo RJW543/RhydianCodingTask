@@ -3,7 +3,6 @@
 // implements it via the os module, and leaving the two that differ as gap
 //The abstract methods make the compiler refuse any platform class that forgets processes or disks.
 
-
 import os from 'node:os'
 import type { SystemInfoService } from './SystemInfoService'
 import type { OsInfo, MemoryInfo, ProcessInfo, DiskInfo } from '../../shared/types'
@@ -27,20 +26,19 @@ export abstract class BaseSystemInfoService implements SystemInfoService {
     }
   }
 
-async getMemoryInfo(): Promise<MemoryInfo> {
-    const totalBytes= os.totalmem()
+  async getMemoryInfo(): Promise<MemoryInfo> {
+    const totalBytes = os.totalmem()
     const freeBytes = os.freemem()
-    const usedBytes = (totalBytes - freeBytes)
+    const usedBytes = totalBytes - freeBytes
     return {
-        totalBytes,
-        freeBytes,
-        usedBytes,
-        usedPercentage: Math.round((usedBytes / totalBytes) * 100)
-    
+      totalBytes,
+      freeBytes,
+      usedBytes,
+      usedPercentage: Math.round((usedBytes / totalBytes) * 100)
     }
-}
+  }
 
-// no implementation here: each platform subclass must provide these
-abstract getProcesses(): Promise<ProcessInfo[]>
-abstract getDiskInfo(): Promise<DiskInfo[]>
+  // no implementation here: each platform subclass must provide these
+  abstract getProcesses(): Promise<ProcessInfo[]>
+  abstract getDiskInfo(): Promise<DiskInfo[]>
 }
